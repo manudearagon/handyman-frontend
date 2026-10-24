@@ -1,7 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { ApiError, login, register } from "@/lib/api";
+import { ApiError, login, loginWithGoogle, register } from "@/lib/api";
 import { createSession, deleteSession } from "@/lib/session";
 
 export type FormState = { error?: string } | undefined;
@@ -40,6 +40,22 @@ export async function loginAction(_prev: FormState, formData: FormData): Promise
     await createSession(auth);
   } catch (error) {
     return { error: error instanceof ApiError ? error.message : "No pudimos iniciar sesión" };
+  }
+  redirect("/cuenta");
+}
+
+export async function googleLoginAction(
+  idToken: string,
+  accountType: "CLIENT" | "PROFESSIONAL",
+): Promise<FormState> {
+  try {
+    const auth = await loginWithGoogle({
+      idToken,
+      accountType: accountType === "PROFESSIONAL" ? "PROFESSIONAL" : "CLIENT",
+    });
+    await createSession(auth);
+  } catch (error) {
+    return { error: error instanceof ApiError ? error.message : "No pudimos ingresar con Google" };
   }
   redirect("/cuenta");
 }

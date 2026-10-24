@@ -1,11 +1,13 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { registerAction } from "@/app/actions";
 import { buttonClass, inputClass } from "@/components/AuthCard";
+import { GoogleButton } from "@/components/GoogleButton";
 
 export function RegisterForm({ defaultType }: { defaultType: "CLIENT" | "PROFESSIONAL" }) {
   const [state, action, pending] = useActionState(registerAction, undefined);
+  const [accountType, setAccountType] = useState(defaultType);
 
   return (
     <form action={action} className="space-y-4">
@@ -13,7 +15,13 @@ export function RegisterForm({ defaultType }: { defaultType: "CLIENT" | "PROFESS
         <legend className="text-sm font-medium text-slate-700">¿Qué querés hacer?</legend>
         <div className="mt-2 grid grid-cols-2 gap-2">
           <label className="flex cursor-pointer items-center gap-2 rounded-md border border-slate-300 px-3 py-2 has-[:checked]:border-orange-500 has-[:checked]:bg-orange-50">
-            <input type="radio" name="accountType" value="CLIENT" defaultChecked={defaultType === "CLIENT"} />
+            <input
+              type="radio"
+              name="accountType"
+              value="CLIENT"
+              checked={accountType === "CLIENT"}
+              onChange={() => setAccountType("CLIENT")}
+            />
             Contratar
           </label>
           <label className="flex cursor-pointer items-center gap-2 rounded-md border border-slate-300 px-3 py-2 has-[:checked]:border-orange-500 has-[:checked]:bg-orange-50">
@@ -21,12 +29,14 @@ export function RegisterForm({ defaultType }: { defaultType: "CLIENT" | "PROFESS
               type="radio"
               name="accountType"
               value="PROFESSIONAL"
-              defaultChecked={defaultType === "PROFESSIONAL"}
+              checked={accountType === "PROFESSIONAL"}
+              onChange={() => setAccountType("PROFESSIONAL")}
             />
             Ofrecer servicios
           </label>
         </div>
       </fieldset>
+      <GoogleButton accountType={accountType} />
       <label className="block text-sm font-medium text-slate-700">
         Nombre y apellido
         <input name="fullName" required maxLength={120} autoComplete="name" className={inputClass} />
