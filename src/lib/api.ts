@@ -67,6 +67,10 @@ export function login(body: { email: string; password: string }) {
   return request<AuthResponse>("/api/auth/login", { method: "POST", body: JSON.stringify(body) });
 }
 
+export function loginWithGoogle(body: { idToken: string; accountType: "CLIENT" | "PROFESSIONAL" }) {
+  return request<AuthResponse>("/api/auth/google", { method: "POST", body: JSON.stringify(body) });
+}
+
 export function getMe(token: string) {
   return request<User>("/api/me", { token });
 }
